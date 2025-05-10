@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+  
+</body>
+
+</html><!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DARKY - Marque Urbaine</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #111; color: #fff; }
+    header { background: #000; padding: 20px; text-align: center; }
+    header h1 { margin: 0; font-size: 2.5em; letter-spacing: 2px; }
+    nav { background: #1a1a1a; text-align: center; padding: 10px 0; }
+    nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+    .section { padding: 40px 20px; text-align: center; }
+    .catalogue { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+    .tshirt { background: #222; padding: 20px; border-radius: 10px; width: 250px; }
+    .tshirt img { width: 100%; border-radius: 10px; }
+    .btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #fff; color: #000; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    footer { background: #000; text-align: center; padding: 20px; margin-top: 40px; font-size: 0.9em; }
+    form { display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 400px; margin: 0 auto; }
+    input, textarea { width: 100%; padding: 10px; border-radius: 5px; border: none; font-size: 1em; }
+    input[type="submit"] { background: #fff; color: #000; cursor: pointer; font-weight: bold; }
+    #panier ul { list-style: none; padding: 0; }
+    #panier li { margin: 10px 0; }
+    #panier button { margin-left: 10px; background: red; color: white; border: none; border-radius: 5px; padding: 5px 10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>DARKY</h1>
+  <p>Marque urbaine pour les jeunes en feu</p>
+</header>
+
+<nav>
+  <a href="#presentation">Présentation</a>
+  <a href="#catalogue">Catalogue</a>
+  <a href="#contact">Contact</a>
+  <a href="#panier">Panier (<span id="compteur-panier">0</span>)</a>
+</nav>
+
+<section class="section" id="presentation">
+  <h2>Qui sommes-nous ?</h2>
+  <p>DARKY, c’est plus qu’un style. C’est une mentalité : être fier, être différent, être street.</p>
+</section>
+
+<section class="section" id="catalogue">
+  <h2>Nos T-Shirts</h2>
+  <div class="catalogue">
+    <div class="tshirt">
+      <img src="https://via.placeholder.com/250x250.png?text=Original+Darky" alt="T-shirt Original">
+      <p>Original DARKY</p>
+      <a class="btn" href="#">Ajouter au panier</a>
+    </div>
+    <div class="tshirt">
+      <img src="https://via.placeholder.com/250x250.png?text=Darky+Smiley" alt="T-shirt Smiley">
+      <p>Darky Smiley</p>
+      <a class="btn" href="#">Ajouter au panier</a>
+    </div>
+    <div class="tshirt">
+      <img src="https://via.placeholder.com/250x250.png?text=Darky+Flamme" alt="T-shirt Flamme">
+      <p>Darky Flamme</p>
+      <a class="btn" href="#">Ajouter au panier</a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <h2>Contacte-nous</h2>
+  <form>
+    <input type="text" name="nom" placeholder="Ton nom" required>
+    <input type="email" name="email" placeholder="Ton email" required>
+    <textarea name="message" placeholder="Ton message" rows="5" required></textarea>
+    <input type="submit" value="Envoyer">
+  </form>
+</section>
+
+<section class="section" id="panier">
+  <h2>Ton Panier</h2>
+  <p>Ton panier est vide.</p>
+</section>
+
+<script>
+  let panier = [];
+
+  function enregistrerPanier() {
+    localStorage.setItem("panier", JSON.stringify(panier));
+  }
+
+  function chargerPanier() {
+    const sauvegarde = localStorage.getItem("panier");
+    if (sauvegarde) {
+      panier = JSON.parse(sauvegarde);
+    }
+  }
+
+  function ajouterAuPanier(nom, prix) {
+    panier.push({ nom, prix });
+    enregistrerPanier();
+    alert(nom + " ajouté au panier !");
+    afficherPanier();
+  }
+
+  function afficherPanier() {
+    const sectionPanier = document.getElementById("panier");
+    let html = "<h2>Ton Panier</h2>";
+    if (panier.length === 0) {
+      html += "<p>Ton panier est vide.</p>";
+    } else {
+      html += "<ul>";
+      let total = 0;
+      panier.forEach((item, index) => {
+        html += `<li>${item.nom} - ${item.prix} FCFA <button onclick="supprimer(${index})">Supprimer</button></li>`;
+        total += item.prix;
+      });
+      html += "</ul>";
+      html += `<p><strong>Total : ${total} FCFA</strong></p>`;
+    }
+    sectionPanier.innerHTML = html;
+    document.getElementById("compteur-panier").textContent = panier.length;
+  }
+
+  function supprimer(index) {
+    panier.splice(index, 1);
+    enregistrerPanier();
+    afficherPanier();
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    chargerPanier();
+    afficherPanier();
+
+    const boutons = document.querySelectorAll(".btn");
+    boutons[0].addEventListener("click", function(e) {
+      e.preventDefault();
+      ajouterAuPanier("Original DARKY", 6000);
+    });
+    boutons[1].addEventListener("click", function(e) {
+      e.preventDefault();
+      ajouterAuPanier("Darky Smiley", 6500);
+    });
+    boutons[2].addEventListener("click", function(e) {
+      e.preventDefault();
+      ajouterAuPanier("Darky Flamme", 7000);
+    });
+  });
+</script>
+
+<footer>
+  &copy; 2025 DARKY. Tous droits réservés.
+</footer>
+
+</body>
+</html>
